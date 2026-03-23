@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handwritten Digit Recognizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h1>Handwritten Digit Recognizer</h1>
+    <p class="subtitle">Draw a digit (0-9) on the canvas, then release the mouse</p>
+
+    <!-- Drawing canvas: 280x280 px, black background set via JS -->
+    <canvas id="drawCanvas" width="280" height="280"></canvas>
+
+    <!-- Prediction result text -->
+    <div id="result" class="result">Prediction: -</div>
+
+    <!-- Per-digit probability bar chart -->
+    <div class="chart-wrapper">
+      <canvas id="chartCanvas" width="280" height="120"></canvas>
+    </div>
+
+    <!-- Control buttons -->
+    <div class="btn-row">
+      <button id="predictBtn" class="btn btn-predict">Predict</button>
+      <button id="clearBtn"   class="btn btn-clear">Clear</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
