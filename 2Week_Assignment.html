@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>문학철 — Frontend Developer</title>
+<meta name="description" content="핀테크 지망 신입 프론트엔드 개발자 문학철. React · TypeScript · 금융 UI 개발 포트폴리오.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Outfit',sans-serif;color:#e8e4de;overflow-x:hidden;cursor:none}
+
+.cursor{position:fixed;width:8px;height:8px;border-radius:50%;background:#c8f135;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s,width .2s,height .2s}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(200,241,53,0.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .2s,height .2s,border-color .2s}
+
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:#08090b}
+::-webkit-scrollbar-thumb{background:#333;border-radius:1px}
+
+/* ─────────────────────────────────────
+   NAV
+───────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;
+  background:rgba(8,9,11,0.82);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#c8f135}
+.nav-links{display:flex;gap:36px;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.nav-links a{color:inherit;text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:#e8e4de}
+.nav-cta{background:transparent;border:1px solid rgba(200,241,53,0.5);color:#c8f135;border-radius:4px;padding:8px 20px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:background .2s,color .2s}
+.nav-cta:hover{background:#c8f135;color:#08090b}
+
+/* ─────────────────────────────────────
+   SECTION BASE
+───────────────────────────────────── */
+.section{position:relative;padding:100px 48px;display:grid;grid-template-columns:180px 1fr;gap:60px;max-width:1280px;margin:0 auto}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding-top:6px;position:sticky;top:80px;height:fit-content}
+.section-label span{display:block;font-size:18px;color:rgba(255,255,255,0.08);margin-bottom:6px;letter-spacing:0}
+.section-body{min-width:0}
+.sec-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}
+
+/* ─────────────────────────────────────
+   §1 HERO — 다크 + 라임
+───────────────────────────────────── */
+#hero{background:#08090b;position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;padding:0}
+#hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,241,53,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,241,53,0.025) 1px,transparent 1px);background-size:80px 80px;pointer-events:none}
+#hero::after{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(200,241,53,0.07) 0%,transparent 65%);right:-100px;top:50%;transform:translateY(-50%);pointer-events:none}
+.hero-inner{width:100%;max-width:1280px;margin:0 auto;padding:120px 48px 80px;display:grid;grid-template-columns:1fr 420px;gap:80px;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,241,53,0.2);border-radius:100px;padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:rgba(200,241,53,0.7);margin-bottom:28px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#c8f135;animation:livepulse 2s infinite}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(200,241,53,0.5)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,7vw,88px);font-weight:300;line-height:1;letter-spacing:-2px;margin-bottom:28px}
+.hero-h1 .italic{font-style:italic;color:#c8f135}
+.hero-h1 .light{color:rgba(255,255,255,0.3)}
+.hero-desc{font-size:15px;font-weight:300;color:rgba(232,228,222,0.6);line-height:1.8;max-width:480px;margin-bottom:44px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{background:#c8f135;color:#08090b;border:none;border-radius:6px;padding:14px 28px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:none;transition:opacity .2s,transform .15s}
+.btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:#e8e4de;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:14px 28px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;cursor:none;transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.04)}
+
+/* HERO CHARTS */
+.hero-charts{display:flex;flex-direction:column;gap:14px}
+.hchart{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px 22px;transition:border-color .2s}
+.hchart:hover{border-color:rgba(200,241,53,0.2)}
+.hchart-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.hchart-name{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.hbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 9px;border-radius:100px}
+.hb-lime{background:rgba(200,241,53,0.1);color:#c8f135;border:1px solid rgba(200,241,53,0.15)}
+.hb-blue{background:rgba(74,158,255,0.1);color:#4a9eff;border:1px solid rgba(74,158,255,0.15)}
+.hb-coral{background:rgba(255,107,74,0.1);color:#ff6b4a;border:1px solid rgba(255,107,74,0.15)}
+.hbar-rows{display:flex;flex-direction:column;gap:8px}
+.hbar-row{display:flex;flex-direction:column;gap:3px}
+.hbar-meta{display:flex;justify-content:space-between;font-size:11px}
+.hbar-lbl{color:rgba(255,255,255,0.3)}
+.hbar-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
+.hbar-track{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;position:relative}
+.hbar-bg{position:absolute;inset:0;border-radius:2px;background:rgba(255,255,255,0.06);z-index:0}
+.hbar-fill{position:absolute;top:0;left:0;height:100%;border-radius:2px;width:0;z-index:1;transition:width 1.3s cubic-bezier(.16,1,.3,1) .4s}
+.hbar-fill.lime{background:#c8f135;box-shadow:0 0 8px rgba(200,241,53,.3)}
+.hbar-fill.blue{background:#4a9eff;box-shadow:0 0 8px rgba(74,158,255,.3)}
+.hbar-fill.coral{background:#ff6b4a;box-shadow:0 0 8px rgba(255,107,74,.25)}
+.hdelta{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:3px;margin-left:4px}
+.hd-lime{background:rgba(200,241,53,.1);color:#c8f135}
+.hd-blue{background:rgba(74,158,255,.1);color:#4a9eff}
+.hd-coral{background:rgba(255,107,74,.1);color:#ff6b4a}
+
+/* ─────────────────────────────────────
+   §2 핵심 활동 — 블루-다크
+───────────────────────────────────── */
+#metrics-wrap{background:#0a0e14;border-top:1px solid rgba(74,158,255,0.08)}
+#metrics .sec-eyebrow{color:#4a9eff}
+.metrics-row{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(74,158,255,0.1);border-radius:16px;overflow:hidden;margin-bottom:40px}
+.m-cell{padding:40px 32px;background:rgba(74,158,255,0.03);transition:background .2s}
+.m-cell:hover{background:rgba(74,158,255,0.07)}
+.m-cell+.m-cell{border-left:1px solid rgba(74,158,255,0.1)}
+.m-num{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;line-height:1;letter-spacing:-2px;margin-bottom:10px}
+.mn-lime{color:#c8f135}.mn-blue{color:#4a9eff}.mn-coral{color:#ff6b4a}
+.m-lbl{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.6}
+.tl-card{background:rgba(74,158,255,0.03);border:1px solid rgba(74,158,255,0.1);border-radius:16px;overflow:hidden}
+.tl-head{padding:24px 28px 20px;border-bottom:1px solid rgba(74,158,255,0.1);display:flex;align-items:baseline;gap:12px}
+.tl-big{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:#4a9eff;line-height:1}
+.tl-sub{font-size:13px;color:rgba(255,255,255,0.3)}
+.yr-block{border-bottom:1px solid rgba(255,255,255,0.04)}.yr-block:last-child{border-bottom:none}
+.yr-row{padding:10px 28px;background:rgba(255,255,255,0.02);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,0.2)}
+.pr-row{display:flex;align-items:center;padding:10px 28px;border-top:1px solid rgba(255,255,255,0.04);gap:10px;transition:background .15s}
+.pr-row:hover{background:rgba(74,158,255,0.04)}
+.pdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dl{background:#c8f135}.db{background:#4a9eff}.dc{background:#ff6b4a}
+.pn{font-size:12px;color:#e8e4de;flex:1}
+.pi{font-size:10px;color:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:2px 8px;white-space:nowrap}
+.pk{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;white-space:nowrap;min-width:92px;text-align:right}
+
+/* ─────────────────────────────────────
+   §3 이력 — 웜-다크 + 앰버
+───────────────────────────────────── */
+#career-wrap{background:#0e0b08;border-top:1px solid rgba(245,166,35,0.08)}
+#career .sec-eyebrow{color:#f5a623}
+.career-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid rgba(245,166,35,0.12);border-radius:16px;overflow:hidden;margin-bottom:36px}
+.c-node{background:rgba(245,166,35,0.03);padding:32px 26px;position:relative;transition:background .2s}
+.c-node:hover{background:rgba(245,166,35,0.07)}
+.c-node+.c-node{border-left:1px solid rgba(245,166,35,0.1)}
+.c-node.active{border-top:2px solid #f5a623}
+.c-yr{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,166,35,0.4);margin-bottom:10px}
+.c-role{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;line-height:1.2;margin-bottom:10px}
+.c-role em{font-style:italic}
+.c-detail{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.7;margin-bottom:16px}
+.c-tags{display:flex;flex-wrap:wrap;gap:5px}
+.ctag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 9px;border-radius:4px;border:1px solid rgba(245,166,35,0.15);color:rgba(245,166,35,0.4)}
+.c-node::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:14px;color:rgba(245,166,35,0.15);z-index:1}
+.c-node:last-child::after{display:none}
+
+/* ─────────────────────────────────────
+   §4 프로젝트 — 그린-다크
+───────────────────────────────────── */
+#cases-wrap{background:#080e0b;border-top:1px solid rgba(52,211,153,0.08)}
+#cases-inner{padding:100px 48px;max-width:1280px;margin:0 auto}
+#cases-inner .sec-eyebrow{color:#34d399}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid rgba(52,211,153,0.12);border-radius:16px;overflow:hidden}
+.cs-card{background:rgba(52,211,153,0.02);padding:32px 28px;position:relative;overflow:hidden;transition:background .2s;display:flex;flex-direction:column}
+.cs-card:hover{background:rgba(52,211,153,0.06)}
+.cs-card:nth-child(2){border-left:1px solid rgba(52,211,153,0.1);border-right:1px solid rgba(52,211,153,0.1)}
+.cs-wm{position:absolute;right:-10px;bottom:-16px;font-family:'Cormorant Garamond',serif;font-size:110px;font-weight:300;line-height:1;opacity:.04;pointer-events:none;user-select:none}
+.wm-mint{color:#34d399}.wm-sky{color:#38bdf8}.wm-amber{color:#f5a623}
+.cs-tag{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px;width:fit-content;margin-bottom:20px}
+.ct-mint{background:rgba(52,211,153,0.08);color:#34d399;border:1px solid rgba(52,211,153,0.18)}
+.ct-sky{background:rgba(56,189,248,0.08);color:#38bdf8;border:1px solid rgba(56,189,248,0.18)}
+.ct-amber{background:rgba(245,166,35,0.08);color:#f5a623;border:1px solid rgba(245,166,35,0.18)}
+.cs-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;line-height:1.25;margin-bottom:10px}
+.cs-desc{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.7;margin-bottom:22px;flex:1}
+.cs-kpi-wrap{margin-bottom:20px}
+.cs-kpi-num{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;line-height:1;letter-spacing:-2px;margin-bottom:4px}
+.kn-mint{color:#34d399}.kn-sky{color:#38bdf8}.kn-amber{color:#f5a623}
+.cs-kpi-lbl{font-size:11px;color:rgba(255,255,255,0.25);margin-bottom:16px}
+.cs-bars{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.cs-bar-row{display:flex;flex-direction:column;gap:3px}
+.cs-bar-meta{display:flex;justify-content:space-between;font-size:11px}
+.cs-bar-nm{color:rgba(255,255,255,0.3)}
+.cs-bar-v{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
+.cs-bar-track{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;position:relative;overflow:hidden}
+.cs-bar-fill{position:absolute;top:0;left:0;height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.cbf-mint{background:#34d399;box-shadow:0 0 6px rgba(52,211,153,.35)}
+.cbf-sky{background:#38bdf8;box-shadow:0 0 6px rgba(56,189,248,.35)}
+.cbf-amber{background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.3)}
+.mini-chart{margin-bottom:22px}
+.mc-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:10px}
+.mc-bars{display:flex;align-items:flex-end;gap:4px;height:48px}
+.mc-bw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%}
+.mc-b{width:100%;border-radius:2px 2px 0 0;transition:height 1s cubic-bezier(.16,1,.3,1);height:0}
+.mc-b.mint{background:#34d399;box-shadow:0 0 5px rgba(52,211,153,.3)}.mc-b.mint-d{background:rgba(52,211,153,.15)}
+.mc-b.sky{background:#38bdf8;box-shadow:0 0 5px rgba(56,189,248,.3)}.mc-b.sky-d{background:rgba(56,189,248,.12)}
+.mc-b.amber{background:#f5a623;box-shadow:0 0 5px rgba(245,166,35,.25)}.mc-b.amber-d{background:rgba(245,166,35,.12)}
+.mc-tick{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(255,255,255,0.2);text-align:center;white-space:nowrap}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:4px;padding:3px 9px;font-size:10px;color:rgba(255,255,255,0.35)}
+
+/* ─────────────────────────────────────
+   §5 스킬 — 퍼플-다크
+───────────────────────────────────── */
+#skills-wrap{background:#0c0a12;border-top:1px solid rgba(167,139,250,0.08)}
+#skills .sec-eyebrow{color:#a78bfa}
+.skills-layout{display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid rgba(167,139,250,0.12);border-radius:16px;overflow:hidden}
+.sk-cell{background:rgba(167,139,250,0.03);padding:30px;transition:background .2s}
+.sk-cell:hover{background:rgba(167,139,250,0.07)}
+.sk-cell:nth-child(odd){border-right:1px solid rgba(167,139,250,0.1)}
+.sk-cell:nth-child(n+3){border-top:1px solid rgba(167,139,250,0.1)}
+.sk-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(167,139,250,0.4);margin-bottom:18px}
+.sk-level{display:flex;flex-direction:column;gap:7px}
+.sk-lv-row{display:flex;flex-direction:column;gap:4px}
+.sk-lv-hd{display:flex;justify-content:space-between;align-items:center}
+.sk-lv-nm{font-size:13px;font-weight:400;color:#e8e4de}
+.sk-lv-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(167,139,250,0.6)}
+.sk-lv-track{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+.sk-lv-fill{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.slf-violet{background:#a78bfa;box-shadow:0 0 6px rgba(167,139,250,.4)}
+.slf-indigo{background:#818cf8;box-shadow:0 0 6px rgba(129,140,248,.4)}
+.slf-pink{background:#f472b6;box-shadow:0 0 6px rgba(244,114,182,.35)}
+.sk-chip{background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.12);border-radius:4px;padding:3px 9px;font-size:10px;color:rgba(167,139,250,0.6)}
+
+/* ─────────────────────────────────────
+   §6 작업 방식 — 미드-다크
+───────────────────────────────────── */
+#process-wrap{background:#0b0c0e;border-top:1px solid rgba(255,255,255,0.05)}
+#process .sec-eyebrow{color:rgba(255,255,255,0.3)}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid rgba(255,255,255,0.06);border-radius:16px;overflow:hidden}
+.ps-cell{background:rgba(255,255,255,0.02);padding:32px 26px;transition:background .2s}
+.ps-cell:hover{background:rgba(255,255,255,0.04)}
+.ps-cell+.ps-cell{border-left:1px solid rgba(255,255,255,0.05)}
+.ps-idx{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:rgba(255,255,255,0.06);line-height:1;margin-bottom:16px}
+.ps-title{font-size:14px;font-weight:500;margin-bottom:6px;color:#e8e4de}
+.ps-desc{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.65}
+
+/* ─────────────────────────────────────
+   §7 CTA — 라임 그라디언트
+───────────────────────────────────── */
+#cta-wrap{background:linear-gradient(135deg,#08090b 0%,#0d1a08 60%,#111f06 100%);border-top:1px solid rgba(200,241,53,0.1);padding:120px 48px;position:relative;overflow:hidden}
+#cta-wrap::before{content:'';position:absolute;top:-200px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(200,241,53,0.08) 0%,transparent 65%);pointer-events:none}
+#cta-wrap::after{content:'';position:absolute;bottom:-100px;left:10%;width:400px;height:400px;background:radial-gradient(circle,rgba(200,241,53,0.04) 0%,transparent 65%);pointer-events:none}
+.cta-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr auto;align-items:center;gap:60px;position:relative;z-index:1}
+.cta-badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(200,241,53,0.6);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.cta-badge::before{content:'';display:block;width:20px;height:1px;background:rgba(200,241,53,0.4)}
+.cta-h{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.05;letter-spacing:-1px;margin-bottom:12px}
+.cta-sub{font-size:14px;font-weight:300;color:rgba(232,228,222,0.45)}
+.cta-actions{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.cta-note{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:rgba(255,255,255,0.2);text-align:right;margin-top:2px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.fu{opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards}
+.d0{animation-delay:.05s}.d1{animation-delay:.12s}.d2{animation-delay:.22s}.d3{animation-delay:.34s}
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────── */
+@media(max-width:768px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .hero-inner{grid-template-columns:1fr;padding:100px 20px 60px;gap:40px}
+  .hero-charts{display:none}.hero-h1{font-size:48px}
+  .section{grid-template-columns:1fr;padding:56px 20px;gap:20px}
+  .section-label{position:static}
+  .metrics-row,.career-grid,.case-grid,.skills-layout{grid-template-columns:1fr}
+  .m-cell+.m-cell,.c-node+.c-node,.cs-card:nth-child(2){border-left:none;border-top:1px solid rgba(255,255,255,.05)}
+  .cs-card:nth-child(2){border-right:none}
+  .process-grid{grid-template-columns:1fr 1fr}
+  #cases-inner{padding:56px 20px}
+  #cta-wrap{padding:72px 20px}
+  .cta-inner{grid-template-columns:1fr;gap:32px}
+  .cta-actions{align-items:flex-start}
+}
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:48px}
+  .metrics-row{grid-template-columns:1fr}.m-cell+.m-cell{border-left:none;border-top:1px solid rgba(74,158,255,0.1)}
+  .career-grid,.case-grid{grid-template-columns:1fr}
+  .c-node+.c-node{border-left:none;border-top:1px solid rgba(245,166,35,0.08)}
+  .cs-card:nth-child(2){border-left:none;border-right:none;border-top:1px solid rgba(52,211,153,0.08)}
+  .skills-layout{grid-template-columns:1fr}
+  .sk-cell:nth-child(odd){border-right:none}.sk-cell:nth-child(n+2){border-top:1px solid rgba(167,139,250,0.1)}
+  .process-grid{grid-template-columns:1fr 1fr}
+  .ps-cell:nth-child(2n){border-left:1px solid rgba(255,255,255,.05)}.ps-cell:nth-child(n+3){border-top:1px solid rgba(255,255,255,.05)}.ps-cell:nth-child(2n+1){border-left:none}
+  .cta-inner{grid-template-columns:1fr}.cta-actions{align-items:flex-start}
+  nav{padding:0 24px}.nav-links{gap:20px}
+  .section{padding:64px 24px}
+  #cases-inner{padding:64px 24px}
+  #cta-wrap{padding:80px 24px}
+}
+</style>
+</head>
+<body>
+
+<a href="#hero" style="position:absolute;left:-9999px;top:0;z-index:999;background:#c8f135;color:#08090b;padding:8px 16px;font-size:12px;border-radius:4px;text-decoration:none" onfocus="this.style.left='0'" onblur="this.style.left='-9999px'" aria-label="메인 콘텐츠로 바로가기">콘텐츠로 바로가기</a>
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">HC.DEV</div>
+  <div class="nav-links">
+    <a href="#hero">홈</a>
+    <a href="#metrics-wrap">활동</a>
+    <a href="#career-wrap">이력</a>
+    <a href="#cases-wrap">프로젝트</a>
+    <a href="#skills-wrap">스킬</a>
+    <a href="#cta-wrap">연락</a>
+  </div>
+  <button class="nav-cta" aria-label="이력서 확인하기">이력서 보기 →</button>
+</nav>
+
+<!-- ══════ §1 HERO ══════ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag fu d0">
+        <span class="live-dot"></span>
+        Frontend Developer · Fintech 지망 · 구직 중
+      </div>
+      <h1 class="hero-h1 fu d1">
+        <span class="light">금융을</span><br>
+        더 쉽게<br>
+        <em class="italic">만드는</em><br>
+        <span class="light">개발자</span>
+      </h1>
+      <p class="hero-desc fu d2">
+        복잡한 금융 정보를 누구나 직관적으로 이해할 수 있는 UI로 구현합니다.
+        부트캠프와 3개의 개인 프로젝트를 통해 React · TypeScript · 금융 도메인 이해를
+        쌓았습니다. 함께 성장할 팀을 찾고 있습니다.
+      </p>
+      <div class="hero-btns fu d3">
+        <a href="#cases-wrap" style="text-decoration:none">
+          <button class="btn-primary" aria-label="프로젝트 보기">프로젝트 보기 ↓</button>
+        </a>
+        <a href="resume.pdf" download="Moon_Hakchul_Resume.pdf" style="text-decoration:none">
+          <button class="btn-ghost" aria-label="이력서 PDF 다운로드">이력서 다운로드</button>
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero 우측: 프로젝트 주요 지표 3종 -->
+    <div class="hero-charts fu d2">
+
+      <!-- Chart 1: 가계부 앱 성능 -->
+      <div class="hchart">
+        <div class="hchart-top">
+          <span class="hchart-name">Lighthouse — 가계부 앱 (개인 프로젝트)</span>
+          <span class="hbadge hb-lime">PERFORMANCE</span>
+        </div>
+        <div class="hbar-rows">
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">초기 빌드</span>
+              <span class="hbar-val" style="color:rgba(255,255,255,.2);text-decoration:line-through">58점</span>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill" data-w="46%" style="background:rgba(255,255,255,.12)"></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">최적화 후</span>
+              <div style="display:flex;align-items:center">
+                <span class="hbar-val" style="color:#c8f135">91점</span>
+                <span class="hdelta hd-lime">+33pt</span>
+              </div>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill lime" data-w="83%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 2: 투자 대시보드 렌더링 -->
+      <div class="hchart">
+        <div class="hchart-top">
+          <span class="hchart-name">차트 렌더링 — 투자 대시보드</span>
+          <span class="hbadge hb-blue">RENDERING</span>
+        </div>
+        <div class="hbar-rows">
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">최초 구현</span>
+              <span class="hbar-val" style="color:rgba(255,255,255,.2);text-decoration:line-through">1,200ms</span>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill" data-w="80%" style="background:rgba(255,255,255,.12)"></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">최적화 후</span>
+              <div style="display:flex;align-items:center">
+                <span class="hbar-val" style="color:#4a9eff">340ms</span>
+                <span class="hdelta hd-blue">−72%</span>
+              </div>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill blue" data-w="23%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart 3: 오픈뱅킹 앱 테스트 커버리지 -->
+      <div class="hchart">
+        <div class="hchart-top">
+          <span class="hchart-name">테스트 커버리지 — 오픈뱅킹 앱</span>
+          <span class="hbadge hb-coral">QUALITY</span>
+        </div>
+        <div class="hbar-rows">
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">핵심 컴포넌트</span>
+              <div style="display:flex;align-items:center">
+                <span class="hbar-val" style="color:#ff6b4a">78%</span>
+                <span class="hdelta hd-coral">Jest + RTL</span>
+              </div>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill coral" data-w="78%"></div></div>
+          </div>
+          <div class="hbar-row">
+            <div class="hbar-meta">
+              <span class="hbar-lbl">E2E (Cypress)</span>
+              <div style="display:flex;align-items:center">
+                <span class="hbar-val" style="color:#ff6b4a">주요 플로우 5개</span>
+              </div>
+            </div>
+            <div class="hbar-track"><div class="hbar-bg"></div><div class="hbar-fill coral" data-w="55%"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ §2 핵심 활동 — 블루-다크 ══════ -->
+<div id="metrics-wrap">
+  <div class="section" id="metrics">
+    <div class="section-label"><span>02</span>Activity</div>
+    <div class="section-body">
+      <div class="sec-eyebrow">주요 활동 지표</div>
+      <div class="metrics-row">
+        <div class="m-cell">
+          <div class="m-num mn-lime">3개</div>
+          <div class="m-lbl">핀테크 도메인 개인 프로젝트<br>가계부 · 투자 · 오픈뱅킹</div>
+        </div>
+        <div class="m-cell">
+          <div class="m-num mn-coral">800+</div>
+          <div class="m-lbl">GitHub 커밋 (최근 1년)<br>꾸준한 학습 기록</div>
+        </div>
+        <div class="m-cell">
+          <div class="m-num mn-blue">12개</div>
+          <div class="m-lbl">습득한 핵심 기술 스택<br>React · TypeScript 중심</div>
+        </div>
+      </div>
+
+      <!-- 학습 및 활동 타임라인 -->
+      <div class="tl-card">
+        <div class="tl-head">
+          <span class="tl-big">1년</span>
+          <span class="tl-sub">집중 학습 기간 · 부트캠프 + 3개 개인 프로젝트</span>
+        </div>
+
+        <div class="yr-block">
+          <div class="yr-row">2024 상반기 · 코드스테이츠 풀스택 부트캠프 (6개월)</div>
+          <div class="pr-row"><div class="pdot dl"></div><span class="pn">HTML/CSS/JS 기초 → React 심화 과정 수료</span><span class="pi">부트캠프</span><span class="pk" style="color:#c8f135">수료증 취득</span></div>
+          <div class="pr-row"><div class="pdot db"></div><span class="pn">팀 프로젝트: 소셜 가계부 앱 (5인 팀)</span><span class="pi">팀 프로젝트</span><span class="pk" style="color:#4a9eff">FE 리드 담당</span></div>
+          <div class="pr-row"><div class="pdot dc"></div><span class="pn">알고리즘 스터디 참여 (12주 · 주 3회)</span><span class="pi">스터디</span><span class="pk" style="color:#ff6b4a">JS 60문제+</span></div>
+          <div class="pr-row"><div class="pdot dl"></div><span class="pn">TypeScript 강의 완주 (Udemy · 20시간)</span><span class="pi">자기계발</span><span class="pk" style="color:#c8f135">수료</span></div>
+        </div>
+
+        <div class="yr-block">
+          <div class="yr-row">2024 하반기 · 개인 프로젝트 3종 개발</div>
+          <div class="pr-row"><div class="pdot dl"></div><span class="pn">PocketLedger — AI 카테고리 분류 가계부 앱</span><span class="pi">개인 프로젝트</span><span class="pk" style="color:#c8f135">Lighthouse 91점</span></div>
+          <div class="pr-row"><div class="pdot db"></div><span class="pn">FinBoard — 실시간 주가·포트폴리오 대시보드</span><span class="pi">개인 프로젝트</span><span class="pk" style="color:#4a9eff">렌더링 −72%</span></div>
+          <div class="pr-row"><div class="pdot dc"></div><span class="pn">OpenPay — 오픈뱅킹 API 연동 송금 앱</span><span class="pi">개인 프로젝트</span><span class="pk" style="color:#ff6b4a">테스트 커버 78%</span></div>
+          <div class="pr-row"><div class="pdot dl"></div><span class="pn">핀테크 FE 오픈소스 PR 기여 (2건 머지)</span><span class="pi">오픈소스</span><span class="pk" style="color:#c8f135">기여 완료</span></div>
+          <div class="pr-row"><div class="pdot db"></div><span class="pn">기술 블로그 운영 — React 성능 최적화 시리즈</span><span class="pi">블로그</span><span class="pk" style="color:#4a9eff">월 방문 1,200+</span></div>
+        </div>
+
+        <div class="yr-block">
+          <div class="yr-row">2025 · 취업 준비 + 역량 강화</div>
+          <div class="pr-row"><div class="pdot dl"></div><span class="pn">Next.js 14 App Router 학습 및 적용</span><span class="pi">자기계발</span><span class="pk" style="color:#c8f135">사이드 프로젝트</span></div>
+          <div class="pr-row"><div class="pdot db"></div><span class="pn">핀테크 도메인 스터디 (계좌, 결제, 보안)</span><span class="pi">스터디</span><span class="pk" style="color:#4a9eff">주 1회</span></div>
+          <div class="pr-row"><div class="pdot dc"></div><span class="pn">접근성(a11y) & 금융 보안 규정 학습</span><span class="pi">자기계발</span><span class="pk" style="color:#ff6b4a">WCAG 2.1</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ §3 이력 — 웜-다크 + 앰버 ══════ -->
+<div id="career-wrap">
+  <div class="section" id="career">
+    <div class="section-label"><span>03</span>Background</div>
+    <div class="section-body">
+      <div class="sec-eyebrow" style="color:#f5a623">학습 & 성장 이력</div>
+      <div class="career-grid">
+
+        <div class="c-node">
+          <div class="c-yr">2019~2024 · 신구대학교</div>
+          <div class="c-role" style="color:rgba(232,228,222,.45)">컴퓨터소프트웨어학과<br><em>학사 졸업</em></div>
+          <div class="c-detail">자료구조, 운영체제, 알고리즘, 웹 프로그래밍 수강. 졸업 작품: React 기반 금융 대시보드 개발. 학점 3.9/4.5.</div>
+          <div class="c-tags">
+            <span class="ctag">컴퓨터소프트웨어</span><span class="ctag">자료구조 · 알고리즘</span><span class="ctag">웹 프로그래밍</span>
+          </div>
+        </div>
+
+        <div class="c-node">
+          <div class="c-yr">2024 상반기 · 코드스테이츠</div>
+          <div class="c-role" style="color:rgba(245,166,35,.7)">풀스택<br><em style="color:rgba(245,166,35,.7)">부트캠프</em></div>
+          <div class="c-detail">6개월 집중 과정 수료. React · Node.js · TypeScript 실습. 팀 프로젝트에서 프론트엔드 리드 역할 수행. 매주 코드 리뷰 참여.</div>
+          <div class="c-tags">
+            <span class="ctag">React</span><span class="ctag">TypeScript</span><span class="ctag">Node.js</span><span class="ctag">팀 협업</span>
+          </div>
+        </div>
+
+        <div class="c-node active">
+          <div class="c-yr">2024 하반기~현재</div>
+          <div class="c-role" style="color:#f5a623">개인 프로젝트<br><em>&amp; 구직 중</em></div>
+          <div class="c-detail">핀테크 도메인 3개 프로젝트 자체 기획·개발·배포. 오픈소스 기여, 기술 블로그 운영. 핀테크 FE 포지션 지원 중.</div>
+          <div class="c-tags">
+            <span class="ctag">Next.js</span><span class="ctag">핀테크 UI</span><span class="ctag">오픈소스</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ §4 프로젝트 — 그린-다크 ══════ -->
+<div id="cases-wrap">
+  <div id="cases-inner">
+    <div class="sec-eyebrow">핀테크 개인 프로젝트</div>
+
+    <div class="case-grid">
+
+      <!-- PROJECT 1: 가계부 앱 -->
+      <div class="cs-card">
+        <div class="cs-wm wm-mint">91</div>
+        <div class="cs-tag ct-mint">
+          <span style="width:5px;height:5px;border-radius:50%;background:#34d399;display:inline-block"></span>
+          가계부 · AI 분류
+        </div>
+        <div class="cs-title">PocketLedger<br>AI 카테고리 분류 가계부</div>
+        <div class="cs-desc">OpenAI API로 지출 내역을 자동 카테고리화. 월별 소비 패턴 차트, 예산 초과 알림 구현. React 렌더링 최적화로 Lighthouse 91점 달성. Vercel 배포 운영 중.</div>
+        <div class="cs-kpi-wrap">
+          <div class="cs-kpi-num kn-mint">91<span style="font-size:30px">점</span></div>
+          <div class="cs-kpi-lbl">Lighthouse Performance · 개인 프로젝트</div>
+        </div>
+        <div class="cs-bars">
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">초기 빌드 → 최적화</span><span class="cs-bar-v" style="color:#34d399">58점 → 91점</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-mint" data-p="83%"></div></div>
+          </div>
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">AI 자동 분류 정확도</span><span class="cs-bar-v" style="color:#34d399">88%</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-mint" data-p="88%"></div></div>
+          </div>
+        </div>
+        <div class="mini-chart">
+          <div class="mc-lbl">Lighthouse 최적화 과정</div>
+          <div class="mc-bars">
+            <div class="mc-bw"><div class="mc-b mint-d" data-h="44%"></div><div class="mc-tick">초기</div></div>
+            <div class="mc-bw"><div class="mc-b mint-d" data-h="58%"></div><div class="mc-tick">v1</div></div>
+            <div class="mc-bw"><div class="mc-b mint-d" data-h="72%"></div><div class="mc-tick">v2</div></div>
+            <div class="mc-bw"><div class="mc-b mint" data-h="85%"></div><div class="mc-tick" style="color:#34d399">v3</div></div>
+          </div>
+        </div>
+        <div class="chip-row">
+          <span class="chip">React 18</span><span class="chip">TypeScript</span><span class="chip">OpenAI API</span><span class="chip">Chart.js</span><span class="chip">Vercel</span>
+        </div>
+      </div>
+
+      <!-- PROJECT 2: 투자 대시보드 -->
+      <div class="cs-card">
+        <div class="cs-wm wm-sky">−72</div>
+        <div class="cs-tag ct-sky">
+          <span style="width:5px;height:5px;border-radius:50%;background:#38bdf8;display:inline-block"></span>
+          투자 · 실시간 데이터
+        </div>
+        <div class="cs-title">FinBoard<br>실시간 주가 포트폴리오 대시보드</div>
+        <div class="cs-desc">한국투자증권 KIS Developers API 연동. 보유 종목 실시간 수익률, D3 기반 인터랙티브 차트, WebSocket 시세 구독 구현. React.memo·useMemo로 렌더링 72% 개선.</div>
+        <div class="cs-kpi-wrap">
+          <div class="cs-kpi-num kn-sky">−72<span style="font-size:30px">%</span></div>
+          <div class="cs-kpi-lbl">차트 렌더링 시간 개선 (1,200ms → 340ms)</div>
+        </div>
+        <div class="cs-bars">
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">차트 렌더링</span><span class="cs-bar-v" style="color:#38bdf8">1,200ms → 340ms</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-sky" data-p="72%"></div></div>
+          </div>
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">실시간 업데이트 주기</span><span class="cs-bar-v" style="color:#38bdf8">1초 단위</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-sky" data-p="90%"></div></div>
+          </div>
+        </div>
+        <div class="mini-chart">
+          <div class="mc-lbl">렌더링 시간 개선 추이</div>
+          <div class="mc-bars">
+            <div class="mc-bw"><div class="mc-b sky-d" data-h="80%"></div><div class="mc-tick">Before</div></div>
+            <div class="mc-bw"><div class="mc-b sky-d" data-h="55%"></div><div class="mc-tick">v1</div></div>
+            <div class="mc-bw"><div class="mc-b sky-d" data-h="38%"></div><div class="mc-tick">v2</div></div>
+            <div class="mc-bw"><div class="mc-b sky" data-h="22%"></div><div class="mc-tick" style="color:#38bdf8">v3</div></div>
+          </div>
+        </div>
+        <div class="chip-row">
+          <span class="chip">React</span><span class="chip">D3.js</span><span class="chip">WebSocket</span><span class="chip">KIS API</span><span class="chip">React Query</span>
+        </div>
+      </div>
+
+      <!-- PROJECT 3: 오픈뱅킹 송금 앱 -->
+      <div class="cs-card">
+        <div class="cs-wm wm-amber">78</div>
+        <div class="cs-tag ct-amber">
+          <span style="width:5px;height:5px;border-radius:50%;background:#f5a623;display:inline-block"></span>
+          오픈뱅킹 · 송금
+        </div>
+        <div class="cs-title">OpenPay<br>오픈뱅킹 API 연동 송금 앱</div>
+        <div class="cs-desc">금융결제원 오픈뱅킹 Sandbox API 연동. 계좌 조회·송금 플로우 구현, 금융보안 요건(XSS·CSRF 대응), 접근성 WCAG 2.1 AA 준수. Jest·RTL 테스트 커버리지 78%.</div>
+        <div class="cs-kpi-wrap">
+          <div class="cs-kpi-num kn-amber">78<span style="font-size:30px">%</span></div>
+          <div class="cs-kpi-lbl">테스트 커버리지 · Jest + RTL</div>
+        </div>
+        <div class="cs-bars">
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">테스트 커버리지</span><span class="cs-bar-v" style="color:#f5a623">78%</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-amber" data-p="78%"></div></div>
+          </div>
+          <div class="cs-bar-row">
+            <div class="cs-bar-meta"><span class="cs-bar-nm">접근성 점수</span><span class="cs-bar-v" style="color:#f5a623">WCAG 2.1 AA</span></div>
+            <div class="cs-bar-track"><div class="cs-bar-fill cbf-amber" data-p="90%"></div></div>
+          </div>
+        </div>
+        <div class="mini-chart">
+          <div class="mc-lbl">테스트 커버리지 확장</div>
+          <div class="mc-bars">
+            <div class="mc-bw"><div class="mc-b amber-d" data-h="20%"></div><div class="mc-tick">v1</div></div>
+            <div class="mc-bw"><div class="mc-b amber-d" data-h="40%"></div><div class="mc-tick">v2</div></div>
+            <div class="mc-bw"><div class="mc-b amber-d" data-h="60%"></div><div class="mc-tick">v3</div></div>
+            <div class="mc-bw"><div class="mc-b amber" data-h="78%"></div><div class="mc-tick" style="color:#f5a623">v4</div></div>
+          </div>
+        </div>
+        <div class="chip-row">
+          <span class="chip">React</span><span class="chip">TypeScript</span><span class="chip">오픈뱅킹 API</span><span class="chip">Jest</span><span class="chip">Cypress</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════ §5 스킬 — 퍼플-다크 ══════ -->
+<div id="skills-wrap">
+  <div class="section" id="skills">
+    <div class="section-label"><span>05</span>Skills</div>
+    <div class="section-body">
+      <div class="sec-eyebrow" style="color:#a78bfa">기술 스택 & 학습 수준</div>
+      <div class="skills-layout">
+
+        <div class="sk-cell">
+          <div class="sk-cat">핵심 역량 수준</div>
+          <div class="sk-level">
+            <div class="sk-lv-row">
+              <div class="sk-lv-hd"><span class="sk-lv-nm">React / Next.js</span><span class="sk-lv-pct">70%</span></div>
+              <div class="sk-lv-track"><div class="sk-lv-fill slf-violet" data-p="70%"></div></div>
+            </div>
+            <div class="sk-lv-row">
+              <div class="sk-lv-hd"><span class="sk-lv-nm">TypeScript</span><span class="sk-lv-pct">65%</span></div>
+              <div class="sk-lv-track"><div class="sk-lv-fill slf-indigo" data-p="65%"></div></div>
+            </div>
+            <div class="sk-lv-row">
+              <div class="sk-lv-hd"><span class="sk-lv-nm">금융 도메인 이해</span><span class="sk-lv-pct">60%</span></div>
+              <div class="sk-lv-track"><div class="sk-lv-fill slf-pink" data-p="60%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sk-cell">
+          <div class="sk-cat">프론트엔드 스택</div>
+          <div class="chip-row">
+            <span class="sk-chip">React 18</span>
+            <span class="sk-chip">Next.js 14</span>
+            <span class="sk-chip">TypeScript</span>
+            <span class="sk-chip">React Query</span>
+            <span class="sk-chip">Zustand</span>
+            <span class="sk-chip">Tailwind CSS</span>
+          </div>
+        </div>
+
+        <div class="sk-cell">
+          <div class="sk-cat">금융 & API</div>
+          <div class="chip-row">
+            <span class="sk-chip">오픈뱅킹 API</span>
+            <span class="sk-chip">KIS Developers</span>
+            <span class="sk-chip">D3.js</span>
+            <span class="sk-chip">Chart.js</span>
+            <span class="sk-chip">WebSocket</span>
+            <span class="sk-chip">OpenAI API</span>
+          </div>
+        </div>
+
+        <div class="sk-cell">
+          <div class="sk-cat">테스트 / 협업</div>
+          <div class="chip-row">
+            <span class="sk-chip">Jest</span>
+            <span class="sk-chip">React Testing Library</span>
+            <span class="sk-chip">Cypress</span>
+            <span class="sk-chip">Git / GitHub</span>
+            <span class="sk-chip">Figma</span>
+            <span class="sk-chip">Notion</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ §6 작업 방식 — 미드-다크 ══════ -->
+<div id="process-wrap">
+  <div class="section" id="process">
+    <div class="section-label"><span>06</span>Process</div>
+    <div class="section-body">
+      <div class="sec-eyebrow" style="color:rgba(255,255,255,.3)">개발 접근 방식</div>
+      <div class="process-grid">
+        <div class="ps-cell">
+          <div class="ps-idx">01</div>
+          <div class="ps-title">사용자 관점 우선</div>
+          <div class="ps-desc">금융 서비스 특성상 복잡한 정보를 단순하게 전달하는 것이 핵심. 구현 전 사용자 흐름을 먼저 그립니다.</div>
+        </div>
+        <div class="ps-cell">
+          <div class="ps-idx">02</div>
+          <div class="ps-title">타입 안전 개발</div>
+          <div class="ps-desc">금융 데이터는 타입 오류가 곧 서비스 장애. TypeScript 엄격 모드 기본 적용, any 사용 최소화를 원칙으로 합니다.</div>
+        </div>
+        <div class="ps-cell">
+          <div class="ps-idx">03</div>
+          <div class="ps-title">테스트 & 보안</div>
+          <div class="ps-desc">핵심 금융 플로우는 반드시 테스트 커버. XSS·CSRF 대응, 민감 정보 노출 방지를 체크리스트로 관리합니다.</div>
+        </div>
+        <div class="ps-cell">
+          <div class="ps-idx">04</div>
+          <div class="ps-title">지속적 학습</div>
+          <div class="ps-desc">기술 블로그 정리, 오픈소스 기여, 금융 보안 규정 학습으로 도메인과 기술을 함께 성장시킵니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ §7 CTA — 라임 그라디언트 ══════ -->
+<div id="cta-wrap">
+  <div class="cta-inner">
+    <div>
+      <div class="cta-badge">구직 중 · 핀테크 FE 지망</div>
+      <div class="cta-h">금융을 더 쉽게 만들<br>팀을 찾고 있습니다</div>
+      <div class="cta-sub">커피챗 환영 · 24시간 내 답변 · 서울 및 원격 모두 가능</div>
+    </div>
+    <div class="cta-actions">
+      <a href="mailto:hakchul.moon@email.com" style="text-decoration:none">
+        <button class="btn-primary" aria-label="이메일 보내기">📧 이메일 보내기</button>
+      </a>
+      <a href="resume.pdf" download="Moon_Hakchul_Resume.pdf" style="text-decoration:none">
+        <button class="btn-ghost" aria-label="이력서 PDF 다운로드">이력서 다운로드 PDF</button>
+      </a>
+      <div class="cta-note">풀타임 정규직 · 인턴십 모두 가능</div>
+      <div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end">
+        <a href="https://github.com/hakchul-moon-dev" target="_blank" rel="noopener noreferrer"
+           style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,241,53,0.55);text-decoration:none;border:1px solid rgba(200,241,53,0.18);border-radius:4px;padding:4px 10px"
+           aria-label="GitHub 프로필 방문">GitHub ↗</a>
+        <a href="https://linkedin.com/in/hakchul-moon-fe" target="_blank" rel="noopener noreferrer"
+           style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,241,53,0.55);text-decoration:none;border:1px solid rgba(200,241,53,0.18);border-radius:4px;padding:4px 10px"
+           aria-label="LinkedIn 방문">LinkedIn ↗</a>
+        <a href="https://velog.io/@hakchul-moon" target="_blank" rel="noopener noreferrer"
+           style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(200,241,53,0.55);text-decoration:none;border:1px solid rgba(200,241,53,0.18);border-radius:4px;padding:4px 10px"
+           aria-label="기술 블로그 방문">Blog ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 커스텀 커서 ── */
+const cur = document.getElementById('cur');
+const ring = document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('button,a,.m-cell,.c-node,.cs-card,.sk-cell,.ps-cell,.pr-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='52px';ring.style.height='52px';ring.style.borderColor='rgba(200,241,53,.6)'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(200,241,53,.4)'});
+});
+
+/* ── 애니메이션 ── */
+function applyAnim(el) {
+  if(el.dataset.w) el.style.width  = el.dataset.w;
+  if(el.dataset.p) el.style.width  = el.dataset.p;
+  if(el.dataset.h) el.style.height = el.dataset.h;
+}
+/* Hero 차트: 페이지 로드 즉시 실행 */
+const heroFills = document.querySelectorAll('.hbar-fill');
+setTimeout(() => { heroFills.forEach(applyAnim); }, 150);
+/* 스크롤 진입 시 실행 */
+const scrollEls = document.querySelectorAll('.cs-bar-fill,.mc-b,.sk-lv-fill');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    applyAnim(e.target);
+    obs.unobserve(e.target);
+  });
+},{threshold:.2});
+scrollEls.forEach(b=>obs.observe(b));
+setTimeout(()=>{
+  scrollEls.forEach(b=>{
+    if(b.getBoundingClientRect().top < window.innerHeight) applyAnim(b);
+  });
+},500);
+</script>
+</body>
+</html>
