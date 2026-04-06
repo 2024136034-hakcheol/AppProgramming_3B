@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상식 퀴즈 게임</title>
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #222; min-height: 100vh; }
+
+    /* ── Screens ── */
+    .screen { display: none; max-width: 640px; margin: 0 auto; padding: 2rem 1rem; }
+    .screen.active { display: block; }
+
+    /* ── Common ── */
+    h1 { font-size: 2rem; text-align: center; margin-bottom: 1rem; }
+    h2 { font-size: 1.4rem; margin-bottom: 1rem; }
+    .btn {
+      display: block; width: 100%; padding: .75rem 1rem;
+      margin: .5rem 0; border: none; border-radius: 8px;
+      font-size: 1rem; cursor: pointer; background: #4f8ef7; color: #fff;
+      transition: background .2s;
+    }
+    .btn:hover { background: #2d6fd4; }
+    .btn.secondary { background: #6c757d; }
+    .btn.secondary:hover { background: #495057; }
+
+    /* ── Start Screen ── */
+    #screen-start { text-align: center; padding-top: 4rem; }
+    #screen-start p { margin-bottom: 1.5rem; color: #555; }
+    #input-name {
+      width: 100%; padding: .65rem 1rem; font-size: 1rem;
+      border: 1px solid #ccc; border-radius: 8px; margin-bottom: .75rem;
+    }
+
+    /* ── Category Screen ── */
+    .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
+    .btn-category { background: #fff; color: #333; border: 2px solid #4f8ef7; }
+    .btn-category:hover { background: #4f8ef7; color: #fff; }
+
+    /* ── Quiz Screen ── */
+    #quiz-meta { display: flex; justify-content: space-between; font-size: .9rem; color: #555; margin-bottom: .5rem; }
+    #timer-bar-wrap { background: #dde; border-radius: 4px; height: 8px; margin-bottom: 1rem; }
+    #timer-bar { height: 100%; background: #4f8ef7; border-radius: 4px; transition: width .9s linear, background .5s; width: 100%; }
+    #question-text { font-size: 1.15rem; margin-bottom: 1.25rem; line-height: 1.5; }
+    .choice-btn {
+      display: block; width: 100%; padding: .65rem 1rem;
+      margin: .4rem 0; border: 2px solid #ccc; border-radius: 8px;
+      background: #fff; font-size: 1rem; cursor: pointer; text-align: left;
+      transition: background .15s, border-color .15s;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: #4f8ef7; background: #eef3ff; }
+    .choice-btn.correct { background: #d4edda; border-color: #28a745; }
+    .choice-btn.wrong   { background: #f8d7da; border-color: #dc3545; }
+    #feedback-box { margin-top: 1rem; padding: .75rem 1rem; border-radius: 8px; background: #fff3cd; font-size: .95rem; display: none; white-space: pre-wrap; }
+    #btn-next { margin-top: 1rem; display: none; }
+
+    /* ── Result Screen ── */
+    #score-display { font-size: 2.5rem; text-align: center; margin: 1rem 0; color: #4f8ef7; }
+    #wrong-list { list-style: none; margin-top: 1rem; }
+    #wrong-list li { background: #fff; border-radius: 8px; padding: .75rem 1rem; margin-bottom: .5rem; font-size: .9rem; line-height: 1.5; }
+
+    /* ── Leaderboard Screen ── */
+    #leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    #leaderboard-table th, #leaderboard-table td { padding: .5rem .75rem; border-bottom: 1px solid #ddd; text-align: center; font-size: .9rem; }
+    #leaderboard-table th { background: #4f8ef7; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 시작 화면 -->
+  <div id="screen-start" class="screen active">
+    <h1>상식 퀴즈</h1>
+    <p>닉네임을 입력하고 게임을 시작하세요!</p>
+    <input id="input-name" type="text" placeholder="닉네임 입력" maxlength="12" onkeydown="if(event.key==='Enter') startGame()" />
+    <button class="btn" onclick="startGame()">게임 시작</button>
+  </div>
+
+  <!-- 2. 카테고리 선택 화면 -->
+  <div id="screen-category" class="screen">
+    <h2>카테고리 선택</h2>
+    <p id="player-greeting"></p>
+    <div class="category-grid">
+      <button class="btn btn-category" onclick="selectCategory('한국사')">한국사</button>
+      <button class="btn btn-category" onclick="selectCategory('과학')">과학</button>
+      <button class="btn btn-category" onclick="selectCategory('지리')">지리</button>
+      <button class="btn btn-category" onclick="selectCategory('일반상식')">일반상식</button>
+      <button class="btn btn-category" style="grid-column:1/-1" onclick="selectCategory('전체')">전체 도전 (40문제)</button>
+    </div>
+  </div>
+
+  <!-- 3. 퀴즈 화면 -->
+  <div id="screen-quiz" class="screen">
+    <div id="quiz-meta">
+      <span id="quiz-progress">1 / 10</span>
+      <span id="quiz-category"></span>
+      <span id="timer-display">15</span>
+    </div>
+    <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+    <p id="question-text"></p>
+    <div id="choices"></div>
+    <div id="feedback-box"></div>
+    <button id="btn-next" class="btn" onclick="nextQuestion()">다음 문제</button>
+  </div>
+
+  <!-- 4. 결과 화면 -->
+  <div id="screen-result" class="screen">
+    <h2>게임 결과</h2>
+    <div id="score-display"></div>
+    <p id="result-summary"></p>
+    <h3 style="margin-top:1.5rem">오답 노트</h3>
+    <ul id="wrong-list"></ul>
+    <button class="btn" onclick="showScreen('screen-leaderboard')">순위 보기</button>
+    <button class="btn secondary" onclick="showScreen('screen-start')">처음으로</button>
+  </div>
+
+  <!-- 5. 순위 화면 -->
+  <div id="screen-leaderboard" class="screen">
+    <h2>순위표</h2>
+    <table id="leaderboard-table">
+      <thead><tr><th>순위</th><th>닉네임</th><th>카테고리</th><th>점수</th><th>날짜</th></tr></thead>
+      <tbody id="leaderboard-body"></tbody>
+    </table>
+    <button class="btn secondary" style="margin-top:1rem" onclick="showScreen('screen-start')">처음으로</button>
+  </div>
+
+  <script src="quiz-data.js"></script>
+  <script src="quiz-game.js"></script>
+</body>
+</html>

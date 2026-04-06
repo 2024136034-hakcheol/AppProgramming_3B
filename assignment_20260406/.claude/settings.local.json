@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/AppProgramming_3B//**)",
+      "Bash(git -C /c/AppProgramming_3B/assignment_20260406 log --oneline -10)"
+    ]
+  }
+}
