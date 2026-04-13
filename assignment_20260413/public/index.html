@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FridgeChef — 냉장고 레시피 추천</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #1a6b3c;
+    }
+    p.subtitle {
+      color: #666;
+      margin-bottom: 32px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 640px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+    }
+    .upload-area {
+      border: 2px dashed #a8d5b9;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .upload-area:hover { background: #f0faf4; }
+    .upload-area input { display: none; }
+    .upload-area .icon { font-size: 3rem; margin-bottom: 12px; }
+    .upload-area p { color: #888; font-size: 0.95rem; }
+    #preview {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+    #preview img {
+      max-width: 100%;
+      max-height: 300px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+    button#analyzeBtn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #1a6b3c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button#analyzeBtn:hover { background: #145730; }
+    button#analyzeBtn:disabled { background: #a0c8b0; cursor: not-allowed; }
+    .status {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1a6b3c;
+    }
+    .ingredient-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ingredient-tag {
+      background: #e8f5ee;
+      color: #1a6b3c;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+    }
+    .recipe-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .recipe-card:last-child { margin-bottom: 0; }
+    .recipe-content {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: #444;
+    }
+    .recipe-content h2 {
+      font-size: 1.1rem;
+      color: #1a6b3c;
+      margin-bottom: 8px;
+    }
+    .hidden { display: none; }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ccc;
+      border-top-color: #1a6b3c;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <h1>🥬 FridgeChef</h1>
+  <p class="subtitle">냉장고 사진을 올리면 재료를 인식하고 레시피를 추천해 드려요</p>
+
+  <div class="card">
+    <div class="upload-area" id="uploadArea">
+      <input type="file" id="fileInput" accept="image/*" />
+      <div class="icon">📷</div>
+      <p>클릭하거나 사진을 여기에 끌어다 놓으세요</p>
+      <p style="margin-top:6px; font-size:0.8rem;">JPG, PNG, WEBP 지원</p>
+    </div>
+
+    <div id="preview">
+      <img id="previewImg" src="" alt="미리보기" />
+    </div>
+
+    <button id="analyzeBtn" disabled>분석 시작</button>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card hidden" id="ingredientsCard">
+    <div class="section-title">🧅 인식된 재료</div>
+    <div class="ingredient-list" id="ingredientList"></div>
+  </div>
+
+  <div class="card hidden" id="recipesCard">
+    <div class="section-title">🍳 추천 레시피</div>
+    <div id="recipeList"></div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const uploadArea = document.getElementById("uploadArea");
+    const preview = document.getElementById("preview");
+    const previewImg = document.getElementById("previewImg");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const status = document.getElementById("status");
+    const ingredientsCard = document.getElementById("ingredientsCard");
+    const ingredientList = document.getElementById("ingredientList");
+    const recipesCard = document.getElementById("recipesCard");
+    const recipeList = document.getElementById("recipeList");
+
+    uploadArea.addEventListener("click", () => fileInput.click());
+
+    uploadArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadArea.style.background = "#f0faf4";
+    });
+    uploadArea.addEventListener("dragleave", () => {
+      uploadArea.style.background = "";
+    });
+    uploadArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadArea.style.background = "";
+      const file = e.dataTransfer.files[0];
+      if (file) handleFile(file);
+    });
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+      const url = URL.createObjectURL(file);
+      previewImg.src = url;
+      preview.style.display = "block";
+      analyzeBtn.disabled = false;
+      analyzeBtn.dataset.file = "";
+      analyzeBtn._file = file;
+
+      ingredientsCard.classList.add("hidden");
+      recipesCard.classList.add("hidden");
+      status.textContent = "";
+    }
+
+    analyzeBtn.addEventListener("click", async () => {
+      const file = analyzeBtn._file;
+      if (!file) return;
+
+      analyzeBtn.disabled = true;
+      ingredientsCard.classList.add("hidden");
+      recipesCard.classList.add("hidden");
+
+      const setStatus = (msg) => { status.innerHTML = `<span class="spinner"></span>${msg}`; };
+      setStatus("냉장고 재료 인식 중...");
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch("/analyze", { method: "POST", body: formData });
+        const data = await res.json();
+
+        if (data.error) throw new Error(data.error);
+
+        // 재료 표시
+        const tags = data.ingredients.split(",").map((s) => s.trim()).filter(Boolean);
+        ingredientList.innerHTML = tags.map((t) => `<span class="ingredient-tag">${t}</span>`).join("");
+        ingredientsCard.classList.remove("hidden");
+
+        // 레시피 표시 (## 기준 분리)
+        setStatus("레시피 카드 생성 중...");
+        const sections = data.recipes.split(/(?=## )/).filter(Boolean);
+        recipeList.innerHTML = sections.map((s) => {
+          const html = s
+            .replace(/^## (.+)$/m, "<h2>$1</h2>")
+            .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+          return `<div class="recipe-card"><div class="recipe-content">${html}</div></div>`;
+        }).join("");
+        recipesCard.classList.remove("hidden");
+
+        status.textContent = "분석 완료!";
+      } catch (e) {
+        status.textContent = "오류: " + e.message;
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

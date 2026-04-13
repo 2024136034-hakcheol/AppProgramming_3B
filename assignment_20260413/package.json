@@ -1,0 +1,8 @@
+{
+  "name": "study-04",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node example.js"
+  }
+}

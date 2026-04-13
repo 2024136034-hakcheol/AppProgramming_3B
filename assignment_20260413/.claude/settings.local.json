@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Tsunami_by_hokusai_19th_century.jpg/320px-Tsunami_by_hokusai_19th_century.jpg\" -o /tmp/test_fridge.jpg)",
+      "Bash(curl -sL \"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Refrigerator_with_various_food.jpg/320px-Refrigerator_with_various_food.jpg\" -o /tmp/test_fridge.jpg)",
+      "Bash(netstat -ano)",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -I{} taskkill //PID {} //F)",
+      "Bash(node server.js)",
+      "Bash(node -e ':*)",
+      "Bash(node example.js)"
+    ]
+  }
+}
